@@ -1,0 +1,54 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+"#include"                    { printf("PREPROCESSOR : %s\n", yytext); }
+"int"|"float"|"char"|"void"  { printf("KEYWORD      : %s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*       { printf("IDENTIFIER   : %s\n", yytext); }
+[0-9]+                        { printf("CONSTANT     : %s\n", yytext); }
+\"([^\"\\]|\\.)*\"            { printf("STRING       : %s\n", yytext); }
+[+\-*/=]                      { printf("OPERATOR     : %s\n", yytext); }
+[(){};,<>]                    { printf("SPECIAL      : %s\n", yytext); }
+[ \t\n]+                      ;
+.                             { printf("UNKNOWN      : %s\n", yytext); }
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("sample.c", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    yylex();
+    fclose(yyin);
+
+    return 0;
+}
+'''
+
+with open("q29.l", "w") as f:
+    f.write(lex_code)
+
+# Create sample C program
+with open("sample.c", "w") as f:
+    f.write('''#include <stdio.h>
+void main()
+{
+    int a,b,c = 30;
+    printf("hello");
+}''')
+
+# Compile and run
+!flex q29.l
+!gcc lex.yy.c -o q29
+!./q29
