@@ -1,0 +1,35 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+abc     { printf("ABC"); }
+.|\n    { printf("%s", yytext); }
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("input.txt", "r");
+    yylex();
+    fclose(yyin);
+
+    return 0;
+}
+'''
+
+with open("q27.l", "w") as f:
+    f.write(lex_code)
+
+# Input string
+with open("input.txt", "w") as f:
+    f.write("abc is a simple abc program")
+
+# Compile and run
+!flex q27.l
+!gcc lex.yy.c -o q27
+!./q27
