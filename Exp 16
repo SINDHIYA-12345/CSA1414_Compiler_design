@@ -1,0 +1,27 @@
+%%writefile q16.c
+#include <stdio.h>
+
+int main() {
+    char op;
+    char a, b, result;
+
+    printf("Enter three-address instruction: ");
+    scanf(" %c = %c %c %c", &result, &a, &op, &b);
+
+    printf("\nAssembly Code:\n");
+
+    printf("MOV R0, %c\n", a);
+
+    if (op == '+')
+        printf("ADD R0, %c\n", b);
+    else if (op == '-')
+        printf("SUB R0, %c\n", b);
+    else if (op == '*')
+        printf("MUL R0, %c\n", b);
+    else if (op == '/')
+        printf("DIV R0, %c\n", b);
+
+    printf("MOV %c, R0\n", result);
+
+    return 0;
+}
