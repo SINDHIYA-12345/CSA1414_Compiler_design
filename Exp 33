@@ -1,0 +1,47 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+https?:\/\/(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}([\/a-zA-Z0-9._?=&-]*)? {
+    printf("Valid URL\n");
+}
+
+.* {
+    printf("Invalid URL\n");
+}
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("input.txt", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    yylex();
+    fclose(yyin);
+
+    return 0;
+}
+'''
+
+with open("q33.l", "w") as f:
+    f.write(lex_code)
+
+# Input URL
+with open("input.txt", "w") as f:
+    f.write("https://www.google.com")
+
+# Compile and run
+!flex q33.l
+!gcc lex.yy.c -o q33
+!./q33
