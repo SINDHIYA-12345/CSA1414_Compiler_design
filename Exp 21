@@ -1,3 +1,4 @@
+sindhiya(192421429)
 %%writefile q21.c
 #include <stdio.h>
 #include <ctype.h>
