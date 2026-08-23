@@ -1,0 +1,64 @@
+# Create LEX program
+lex_code = r'''%{
+#include <stdio.h>
+#include <string.h>
+
+char target[50];
+int count = 0;
+%}
+
+%%
+[a-zA-Z]+ {
+    if(strcmp(yytext, target) == 0)
+        count++;
+}
+
+[ \t\n]+ ;
+. ;
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("input.txt", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    yylex();
+
+    printf("Frequency of '%s' = %d\n", target, count);
+
+    fclose(yyin);
+    return 0;
+}
+'''
+
+with open("q37.l", "w") as f:
+    f.write(lex_code)
+
+# Given word and sentence
+with open("input.txt", "w") as f:
+    f.write("hello world hello student hello")
+
+# Set target word directly
+# Modify the LEX file to use "hello"
+lex_code = lex_code.replace(
+    'char target[50];',
+    'char target[50] = "hello";'
+)
+
+with open("q37.l", "w") as f:
+    f.write(lex_code)
+
+# Compile and run
+!flex q37.l
+!gcc lex.yy.c -o q37
+!./q37
