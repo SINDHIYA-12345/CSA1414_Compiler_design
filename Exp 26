@@ -1,0 +1,47 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,} {
+    printf("Valid Email Address\n");
+}
+
+.* {
+    printf("Invalid Email Address\n");
+}
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("email.txt", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    yylex();
+    fclose(yyin);
+
+    return 0;
+}
+'''
+
+with open("q26.l", "w") as f:
+    f.write(lex_code)
+
+# Input email
+with open("email.txt", "w") as f:
+    f.write("student@gmail.com")
+
+# Compile and run
+!flex q26.l
+!gcc lex.yy.c -o q26
+!./q26
