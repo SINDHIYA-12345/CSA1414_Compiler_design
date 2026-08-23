@@ -1,0 +1,30 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+[A-Z]+      { printf("Capital Word: %s\n", yytext); }
+[ \t\n]+    ;
+.           ;
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    printf("Enter text: ");
+    yylex();
+    return 0;
+}
+'''
+
+with open("q25.l", "w") as f:
+    f.write(lex_code)
+
+# Compile and run
+!flex q25.l
+!gcc lex.yy.c -o q25
+!./q25
