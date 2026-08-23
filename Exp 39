@@ -1,0 +1,60 @@
+# Create LEX program
+lex_code = r'''%{
+#include <stdio.h>
+#include <string.h>
+
+char oldword[] = "hello";
+char newword[] = "hi";
+%}
+
+%%
+[a-zA-Z]+ {
+    if (strcmp(yytext, oldword) == 0)
+        printf("%s", newword);
+    else
+        printf("%s", yytext);
+}
+
+.|\n {
+    printf("%s", yytext);
+}
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("input.txt", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    printf("Original: hello world, hello student\n");
+    printf("Replaced: ");
+
+    yylex();
+
+    printf("\n");
+
+    fclose(yyin);
+    return 0;
+}
+'''
+
+with open("q39.l", "w") as f:
+    f.write(lex_code)
+
+# Input file
+with open("input.txt", "w") as f:
+    f.write("hello world, hello student")
+
+# Compile and run
+!flex q39.l
+!gcc lex.yy.c -o q39
+!./q39
