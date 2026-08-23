@@ -1,0 +1,82 @@
+# Create input.c
+sample = '''#include <stdio.h>
+int main()
+{
+    int a,b,c; /* variable declaration */
+
+    printf("enter two numbers");
+    scanf("%d %d",&a,&b);
+    c=a+b;//adding two numbers
+    printf("sum is %d",c);
+    return 0;
+}
+'''
+
+with open("input.c", "w") as f:
+    f.write(sample)
+
+# Create LEX program
+lex_code = r'''%{
+int comments = 0;
+FILE *out;
+%}
+
+%%
+"//"[^\n]* {
+    comments++;
+}
+
+"/*"([^*]|\*+[^*/])*\*+"/" {
+    comments++;
+}
+
+\n {
+    fputc('\n', out);
+}
+
+. {
+    fputc(yytext[0], out);
+}
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("input.c", "r");
+    out = fopen("output.c", "w");
+
+    if (yyin == NULL)
+    {
+        printf("Input file not found\n");
+        return 1;
+    }
+
+    yylex();
+
+    fclose(yyin);
+    fclose(out);
+
+    printf("Number of comments = %d\n", comments);
+    printf("Comments removed successfully.\n");
+    printf("Output file: output.c\n");
+
+    return 0;
+}
+'''
+
+with open("q24.l", "w") as f:
+    f.write(lex_code)
+
+# Compile and run
+!flex q24.l
+!gcc lex.yy.c -o q24
+!./q24
+
+# Display comment-free output
+print("\n--- output.c ---")
+with open("output.c", "r") as f:
+    print(f.read())
