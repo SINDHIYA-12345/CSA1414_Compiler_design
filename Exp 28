@@ -1,0 +1,47 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+[6-9][0-9]{9} {
+    printf("Valid Mobile Number\n");
+}
+
+.* {
+    printf("Invalid Mobile Number\n");
+}
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("mobile.txt", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    yylex();
+    fclose(yyin);
+
+    return 0;
+}
+'''
+
+with open("q28.l", "w") as f:
+    f.write(lex_code)
+
+# Input mobile number
+with open("mobile.txt", "w") as f:
+    f.write("9876543210")
+
+# Compile and run
+!flex q28.l
+!gcc lex.yy.c -o q28
+!./q28
