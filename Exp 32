@@ -1,0 +1,44 @@
+# Create LEX program
+lex_code = r'''%{
+%}
+
+%%
+-[0-9]+     { printf("Negative Number: %s\n", yytext); }
+[+]?[0-9]+  { printf("Positive Number: %s\n", yytext); }
+[ \t\n]+    ;
+.           ;
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("input.txt", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    yylex();
+    fclose(yyin);
+
+    return 0;
+}
+'''
+
+with open("q32.l", "w") as f:
+    f.write(lex_code)
+
+# Input numbers
+with open("input.txt", "w") as f:
+    f.write("25 -10 50 -35 100")
+
+# Compile and run
+!flex q32.l
+!gcc lex.yy.c -o q32
+!./q32
