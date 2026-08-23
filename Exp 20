@@ -1,3 +1,4 @@
+sindhiya(192421429)
 %%writefile q20.l
 %{
 int macros = 0;
