@@ -1,0 +1,54 @@
+# Create sample.c
+sample = """#define PI 3.14
+#include <stdio.h>
+#include <conio.h>
+void main()
+{
+int a,b,c = 30;
+printf("hello");
+}
+"""
+
+with open("sample.c", "w") as f:
+    f.write(sample)
+
+# Create LEX file
+lex_code = r'''%{
+int line = 1;
+%}
+
+%%
+\n      { line++; printf("\n%d ", line); }
+.       { printf("%s", yytext); }
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    yyin = fopen("sample.c", "r");
+
+    if (yyin == NULL)
+    {
+        printf("File not found\n");
+        return 1;
+    }
+
+    printf("1 ");
+    yylex();
+
+    fclose(yyin);
+    return 0;
+}
+'''
+
+with open("q23.l", "w") as f:
+    f.write(lex_code)
+
+# Compile and run
+!flex q23.l
+!gcc lex.yy.c -o q23
+!./q23
