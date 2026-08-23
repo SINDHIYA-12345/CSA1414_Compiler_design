@@ -1,0 +1,36 @@
+# Create C program
+code = r'''
+#include <stdio.h>
+#include <ctype.h>
+
+int main()
+{
+    char str[200];
+    int i, consonants = 0;
+
+    printf("Sentence: %s\n", "Hello World");
+
+    for(i = 0; "Hello World"[i] != '\0'; i++)
+    {
+        char ch = tolower("Hello World"[i]);
+
+        if(isalpha(ch) &&
+           ch != 'a' && ch != 'e' && ch != 'i' &&
+           ch != 'o' && ch != 'u')
+        {
+            consonants++;
+        }
+    }
+
+    printf("Number of consonants = %d\n", consonants);
+
+    return 0;
+}
+'''
+
+with open("q30.c", "w") as f:
+    f.write(code)
+
+# Compile and run
+!gcc q30.c -o q30
+!./q30
